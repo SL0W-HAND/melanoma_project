@@ -12,6 +12,7 @@ import "./app.css";
 
 import "./components/header.tsx";
 import Header from "./components/header";
+import Foter from "./components/footer";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -40,6 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex-grow">
           {children}
         </div>
+        <Foter />
         <ScrollRestoration />
         <Scripts />
       </body>
