@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-export function Welcome() {
+export default function Welcome() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -59,5 +59,3 @@ export function Welcome() {
     </section>
   );
 }
-
-export default Welcome;
