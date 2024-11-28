@@ -1,0 +1,22 @@
+FROM python:3.12
+
+# Configura el directorio de trabajo
+WORKDIR /app
+
+# Copia los archivos de tu proyecto al contenedor
+COPY . .
+
+# Copia el archivo binario al contenedor
+COPY model1.h5 /usr/local/model1.h5
+COPY model2.h5 /usr/local/model2.h5
+
+
+# Da permisos de ejecución al archivo binario
+RUN chmod +x /usr/local/model1.h5
+RUN chmod +x /usr/local/model2.h5
+
+# Instala dependencias
+RUN pip install -r requirements.txt
+
+# Comando por defecto para ejecutar
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"] 
