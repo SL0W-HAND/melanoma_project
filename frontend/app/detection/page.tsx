@@ -30,7 +30,6 @@ const Detection = () => {
           const formData = new FormData();
           formData.append('image', blob, 'cropped_image.png');
           const url = 'http://165.227.99.181:8000/first_model';
-
           try {
             const response = await fetch(url, {
               method: 'POST',
@@ -44,6 +43,7 @@ const Detection = () => {
             setPrediction(data); // Store the prediction result
           } catch (error) {
             console.error('Error fetching data:', error);
+            alert('There was an issue with the connection. Please try again later.');
           }
         }
       }, 'image/png');
