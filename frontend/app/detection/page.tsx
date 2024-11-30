@@ -29,18 +29,22 @@ const Detection = () => {
         if (blob) {
           const formData = new FormData();
           formData.append('image', blob, 'cropped_image.png');
-          const url = 'http://165.227.99.181:8000/first_model';
+  
+          // Cambiar URL para usar el proxy
+          const url = '/api/first_model'; // Usa la ruta relativa
+  
           try {
             const response = await fetch(url, {
               method: 'POST',
               body: formData,
             });
-
+  
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
+  
             const data = await response.json();
-            console.log(data)
+            console.log(data);
             setPrediction(data); // Store the prediction result
           } catch (error) {
             console.error('Error fetching data:', error);
@@ -50,6 +54,7 @@ const Detection = () => {
       }, 'image/png');
     }
   };
+  
 
   const handleReset = () => {
     setSelectedFile(null);
