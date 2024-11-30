@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-
+export const dynamic = 'force-dynamic'
 const Detection = () => {
   const setSelectedFile = useState<File | null>(null)[1];
   const [preview, setPreview] = useState<string | null>(null);
