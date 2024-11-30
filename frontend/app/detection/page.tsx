@@ -40,6 +40,7 @@ const Detection = () => {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
+            console.log(data)
             setPrediction(data); // Store the prediction result
           } catch (error) {
             console.error('Error fetching data:', error);
