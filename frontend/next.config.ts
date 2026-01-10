@@ -2,22 +2,33 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  async rewrites() {
+  rewrites: async () => {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://165.227.99.181:8000/:path*', // Dirección de tu backend
+        source: "/api/py/:path*",
+        destination:
+          process.env.NODE_ENV === "development"
+            ? "http://127.0.0.1:8000/:path*"
+            : "/api/:path*",
+      },
+      {
+        source: "/docs",
+        destination:
+          process.env.NODE_ENV === "development"
+            ? "http://127.0.0.1:8000/docs"
+            : "/api/docs",
+      },
+      {
+        source: "/openapi.json",
+        destination:
+          process.env.NODE_ENV === "development"
+            ? "http://127.0.0.1:8000/openapi.json"
+            : "/api/openapi.json",
       },
     ];
   },
 
-  images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'smart.servier.com' },
-      { protocol: 'https', hostname: 'www.kaggle.com' },
-      {protocol: 'http',hostname:'165.227.99.181:8000'}
-    ],
-  },
+
 };
 
 export default nextConfig;
