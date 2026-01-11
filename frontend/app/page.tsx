@@ -2,15 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 export default function Welcome() {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   return (
     <section>
       <section className="bg-white dark:bg-gray-900">
@@ -28,10 +21,8 @@ export default function Welcome() {
               which is capable of classifying skin lesions.
             </p>
             <div className="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-              <Link href="/detection" legacyBehavior>
-                <a className="inline-flex items-center justify-center w-full px-5 py-3 text-sm font-medium text-center text-gray-900 border border-gray-200 rounded-lg sm:w-auto hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-                  Make a Diagnosis
-                </a>
+              <Link href="/detection" className="inline-flex items-center justify-center w-full px-5 py-3 text-sm font-medium text-center text-gray-900 border border-gray-200 rounded-lg sm:w-auto hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                Make a Diagnosis
               </Link>
               <a
                 href="https://www.kaggle.com/code/sl0whand/proyectomelanoma"
@@ -42,18 +33,16 @@ export default function Welcome() {
               </a>
             </div>
           </div>
-          {isClient && (
-            <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-              <Image
-                src="https://smart.servier.com/wp-content/uploads/2016/10/Melanome_2.png"
-                alt="Melanoma Image"
-                className="w-full h-auto rounded-lg shadow-lg"
-                width={500}
-                height={500}
-                style={{ height: '60vh', width: '60vh' }}
-              />
-            </div>
-          )}
+          <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
+            <Image
+              src="https://smart.servier.com/wp-content/uploads/2016/10/Melanome_2.png"
+              alt="Melanoma Image"
+              className="w-full h-auto rounded-lg shadow-lg"
+              width={500}
+              height={500}
+              style={{ height: '60vh', width: '60vh' }}
+            />
+          </div>
         </div>
       </section>
     </section>

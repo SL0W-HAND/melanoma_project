@@ -30,8 +30,8 @@ const Detection = () => {
           const formData = new FormData();
           formData.append('image', blob, 'cropped_image.png');
   
-          // Cambiar URL para usar el proxy
-          const url = '/api/first_model'; // Usa la ruta relativa
+          // Use the correct API route
+          const url = '/api/py/predict';
   
           try {
             const response = await fetch(url, {
@@ -45,7 +45,7 @@ const Detection = () => {
   
             const data = await response.json();
             console.log(data);
-            setPrediction(data); // Store the prediction result
+            setPrediction(data);
           } catch (error) {
             console.error('Error fetching data:', error);
             alert('There was an issue with the connection. Please try again later.');
