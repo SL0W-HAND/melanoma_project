@@ -1,8 +1,9 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/py/:path*",
-      "destination": "/api"
+  "functions": {
+    "app/api/predict/route.js": {
+      "maxDuration": 60,
+      "memory": 3008
     }
-  ]
+  },
+  "outputDirectory": ".next"
 }

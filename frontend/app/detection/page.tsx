@@ -30,8 +30,8 @@ const Detection = () => {
           const formData = new FormData();
           formData.append('image', blob, 'cropped_image.png');
   
-          // Use the correct API route
-          const url = '/api/py/predict';
+          // Ruta correcta de la API
+          const url = '/api/predict';
   
           try {
             const response = await fetch(url, {

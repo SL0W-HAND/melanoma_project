@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -14,17 +13,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  rewrites: async () => {
-    return [
-      {
-        source: "/api/py/:path*",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/:path*"
-            : "/api/:path*",
-      },
-    ];
-  },
+  serverExternalPackages: ['onnxruntime-node', 'sharp'],
+  // Configuración para Turbopack (Next.js 16+)
+  turbopack: {},
 };
 
 export default nextConfig;
