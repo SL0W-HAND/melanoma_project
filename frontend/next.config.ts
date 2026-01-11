@@ -13,9 +13,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['onnxruntime-node', 'sharp'],
-  // Configuración para Turbopack (Next.js 16+)
-  turbopack: {},
 };
 
 export default nextConfig;
