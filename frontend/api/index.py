@@ -3,17 +3,22 @@ from mangum import Mangum
 import numpy as np
 from PIL import Image
 import io
-import tflite_runtime.interpreter as tflite
+import onnxruntime as ort  # <--- CAMBIO 1: Importar onnxruntime
 import os
 
 app = FastAPI()
 
-# Load TFLite model at startup - use relative path
-model_path = os.path.join(os.path.dirname(__file__), "model.tflite")
-interpreter = tflite.Interpreter(model_path=model_path)
-interpreter.allocate_tensors()
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
+# Load ONNX model at startup
+# Asegúrate de que tu archivo se llame 'model.onnx' o ajusta el nombre aquí
+model_path = os.path.join(os.path.dirname(__file__), "your_model.onnx")
+
+# <--- CAMBIO 2: Inicializar la sesión de ONNX
+ort_session = ort.InferenceSession(model_path)
+
+# Obtener el nombre de la entrada (input) que el modelo espera
+input_name = ort_session.get_inputs()[0].name
+# Obtener el nombre de la salida (opcional, pero buena práctica)
+output_name = ort_session.get_outputs()[0].name
 
 # Define the classes
 classes = [
@@ -40,15 +45,25 @@ async def preprocess_image(image: UploadFile):
         contents = await image.read()
         img = Image.open(io.BytesIO(contents)).convert('RGB')
         img = img.resize((128, 128))
+        
+        # Convertir a array y normalizar
         img_array = np.array(img, dtype=np.float32) / 255.0
+        
+        # --- CORRECCIÓN AQUÍ ---
+        # La imagen actual es (128, 128, 3) -> (Alto, Ancho, Canales)
+        # Necesitamos mover los Canales al principio: (3, 128, 128)
+        img_array = np.transpose(img_array, (2, 0, 1))
+        
+        # Añadir dimensión del batch: (1, 3, 128, 128)
         img_array = np.expand_dims(img_array, axis=0)
+        
         return img_array
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
 @app.post("/predict")
 async def predict(image: UploadFile = File(...)):
-    """Predict using model.tflite"""
+    """Predict using model.onnx"""
     try:
         if not image:
             raise HTTPException(status_code=400, detail="No image provided")
@@ -56,14 +71,23 @@ async def predict(image: UploadFile = File(...)):
         # Preprocess image
         img_array = await preprocess_image(image)
         
-        # Run inference with TFLite
-        interpreter.set_tensor(input_details[0]['index'], img_array)
-        interpreter.invoke()
-        prediction = interpreter.get_tensor(output_details[0]['index'])
+        # <--- CAMBIO 3: Ejecutar inferencia con ONNX
+        # run(nombres_outputs, {nombre_input: datos})
+        # Si pasas None en outputs, devuelve todos.
+        onnx_pred = ort_session.run([output_name], {input_name: img_array})
         
-        # Process results
+        # ONNX devuelve una lista de resultados, tomamos el primero
+        prediction = onnx_pred[0]
+        
+        # Process results (Igual que antes, numpy funciona igual)
+        # Nota: Si tu modelo devuelve logits (números no normalizados), 
+        # podrías necesitar aplicar softmax aquí, dependiendo de cómo fue exportado.
+        
         type_of_lesion = classes[np.argmax(prediction)]
         cancer_diagnosed = classes2[is_cancerous(np.argmax(prediction))]
+        
+        # Si la predicción no suma 1 (es logits), confidence podría ser > 1 o negativo.
+        # Asumiendo que el modelo ya tiene Softmax al final:
         confidence = np.max(prediction)
         confidence_percentage = int(confidence * 100)
         
@@ -76,11 +100,13 @@ async def predict(image: UploadFile = File(...)):
     except HTTPException:
         raise
     except Exception as e:
+        # Es útil imprimir el error en consola para debuggear dimensiones
+        print(f"Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
 async def index():
-    return {"message": "Melanoma prediction API. Use /predict endpoint."}
+    return {"message": "Melanoma prediction API (ONNX). Use /predict endpoint."}
 
 # Add this at the end for Vercel
 handler = Mangum(app)
