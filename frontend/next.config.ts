@@ -23,24 +23,8 @@ const nextConfig: NextConfig = {
             ? "http://127.0.0.1:8000/:path*"
             : "/api/:path*",
       },
-      {
-        source: "/docs",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/docs"
-            : "/api/docs",
-      },
-      {
-        source: "/openapi.json",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/openapi.json"
-            : "/api/openapi.json",
-      },
     ];
   },
-
-
 };
 
 export default nextConfig;
