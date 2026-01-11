@@ -8,7 +8,8 @@
       "src": "api/index.py",
       "use": "@vercel/python",
       "config": {
-        "includeFiles": "api/model.tflite"
+        "includeFiles": "api/your_model.onnx",
+        "runtime": "python3.12"
       }
     }
   ],
