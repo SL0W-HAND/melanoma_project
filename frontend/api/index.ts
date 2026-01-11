@@ -1,5 +1,5 @@
-// Use "type: module" in package.json to use ES modules
-import express, { Request, Response } from 'express';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import express from 'express';
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.post('/predict', (req, res) => {
   });
 });
 
-app.get('*', (req, res) => {
+app.all('*', (req, res) => {
   res.json({ message: 'Route not found', path: req.path });
 });
 
@@ -41,5 +41,7 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// Export for Vercel serverless
-export default app;
+// Vercel serverless handler
+export default (req: VercelRequest, res: VercelResponse) => {
+  return app(req as any, res as any);
+};
