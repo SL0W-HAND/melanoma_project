@@ -3,14 +3,14 @@ from mangum import Mangum
 import numpy as np
 from PIL import Image
 import io
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 import os
 
 app = FastAPI()
 
 # Load TFLite model at startup - use relative path
 model_path = os.path.join(os.path.dirname(__file__), "model.tflite")
-interpreter = tf.lite.Interpreter(model_path=model_path)
+interpreter = tflite.Interpreter(model_path=model_path)
 interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
